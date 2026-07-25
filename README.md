@@ -41,16 +41,16 @@ To use it, clone the repository and publish it to your local Maven Repository.
 ### Linux / MacOS
 
 ```sh
-git clone https://github.com/breadcat-dev/slate_logger.git
-cd slate_logger
+git clone https://github.com/breadcat-dev/slate-logger.git
+cd slate-logger
 ./gradlew publishToMavenLocal
 ```
 
 ### Windows
 
 ```sh
-git clone https://github.com/breadcat-dev/slate_logger.git
-cd slate_logger
+git clone https://github.com/breadcat-dev/slate-logger.git
+cd slate-logger
 ./gradlew.bat publishToMavenLocal
 ```
 
@@ -58,12 +58,12 @@ Once installed, add the dependency:
 
 ### Groovy
 ```gradle
-implementation "cat.breadcat:slate_logger:<version>"
+implementation "cat.breadcat:slate-logger:<version>"
 ```
 
 ### Kotlin
 ```gradle
-implementation("cat.breadcat:slate_logger:<version>")
+implementation("cat.breadcat:slate-logger:<version>")
 ```
 
 ---

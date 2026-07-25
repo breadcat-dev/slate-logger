@@ -101,7 +101,7 @@ public class Main
         LOGGER.log(Log.debug("debug"));
         LOGGER.log(Log.info("info"));
         LOGGER.log(Log.warn("warn"));
-        LOGGER.log(Log.error("error").with("custom_context", 1337));
+        LOGGER.log(Log.error("error").with("custom-context", 1337));
         LOGGER.log(Log.critical("critical").category("pc-go-boom"));
     }
 }
@@ -188,7 +188,11 @@ LOGGER.log(
 );
 ```
 
-> (2026-07-25 19:37:41.755) [Main-network1] {BreadCat - 127.0.0.1:25565} <ERROR-connection> BreadCat has left the server
+### Console
+
+```text
+(2026-07-25 19:37:41.755) [Main-network1] {BreadCat - 127.0.0.1:25565} <ERROR-connection> BreadCat has left the server
+```
 
 
 ## Roadmap

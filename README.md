@@ -16,14 +16,14 @@
 
 ## Features
 
+- Dependency-free
 - Custom sinks
 - Custom formatters
-- Custom categories
 - Context-aware logging
 - ANSI color support
-- File logging
 - Thread capture
-- Dependency-free
+- File logging
+- Custom categories
 
 
 ## Installation
@@ -197,10 +197,9 @@ LOGGER.log(
 
 ## Roadmap
 
-- init
 - "{}" formatting
 - exception logging
-- final cleanup
+- final API cleanup
 
 
 ## Dependencies

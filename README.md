@@ -1,6 +1,6 @@
 # Slate Engine - Logger
 
-[![License](https://img.shields.io/github/license/breadcat-dev/slate-logger?style=flat&logo=github)](https://github.com/breadcat-dev/slate-logger)
+![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue)
 ![Java](https://img.shields.io/badge/Java-21-007396?style=flat&logo=openjdk&logoColor=white)
 ![Status](https://img.shields.io/badge/status-alpha-red)
 [![Latest Release](https://img.shields.io/github/v/release/breadcat-dev/slate-logger?style=flat&logo=github&color=blue)](https://github.com/breadcat-dev/slate-logger)

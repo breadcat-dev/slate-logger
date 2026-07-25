@@ -1,4 +1,8 @@
-# Slate Engine - Logger
+<h1 align="center">Slate Engine - Logger</h1>
+
+<p align="center">
+  <img src="icon.png" width="128">
+</p>
 
 ![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue)
 ![Java](https://img.shields.io/badge/Java-21-007396?style=flat&logo=openjdk&logoColor=white)

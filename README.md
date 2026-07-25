@@ -10,7 +10,7 @@
 [![Latest Release](https://img.shields.io/github/v/release/breadcat-dev/slate-logger?style=flat&logo=github&color=blue)](https://github.com/breadcat-dev/slate-logger)
 [![Downloads](https://img.shields.io/github/downloads/breadcat-dev/slate-logger/total?style=flat&logo=github&color=brightgreen)](https://github.com/breadcat-dev/slate-logger)
 [![Stars](https://img.shields.io/github/stars/breadcat-dev/slate-logger?style=flat&logo=github&color=yellow)](https://github.com/breadcat-dev/slate-logger)
-> A modular, type-safe logging library, used by the Slate Engine 
+> A modular, dependency-free, type-safe logging library powering the Slate Engine
 
 ---
 

@@ -1,57 +1,92 @@
 package cat.breadcat.logger.formatter;
 
 
+import cat.breadcat.logger.LogLevel;
 import cat.breadcat.logger.ansi.Ansi;
 import cat.breadcat.logger.ansi.AnsiColor;
-import cat.breadcat.logger.event.LogContext;
-import cat.breadcat.logger.event.LogContextKeys;
-import cat.breadcat.logger.event.LogEvent;
+import cat.breadcat.logger.event.*;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 
 public final class PlainFormatter implements LogFormatter
 {
+    // CONSTRUCTOR
     private static final PlainFormatter INSTANCE = new PlainFormatter();
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-            .withZone(ZoneId.systemDefault());
+            .ofPattern(
+                    "yyyy-MM-dd HH:mm:ss.SSS"
+            )
+            .withZone(
+                    ZoneId.systemDefault()
+            );
 
     private PlainFormatter() {}
+    // ~~CONSTRUCTOR~~
 
-
-    @Override
-    public String format(LogEvent event)
-    {
-        LogContext context = event.context();
-
-        String thread = "";
-        if(context.has(LogContextKeys.THREAD_NAME) && context.has(LogContextKeys.THREAD_ID))
-        {
-            String threadName = context.get(LogContextKeys.THREAD_NAME).toString();
-            String threadId = context.get(LogContextKeys.THREAD_ID).toString();
-            thread = "-" + (threadName.isBlank() ? "thread" + threadId : threadName);
-        }
-
-        String category = "";
-        if(context.has(LogContextKeys.CATEGORY))
-            category = "-" + context.get(LogContextKeys.CATEGORY).toString();
-
-
-        String timestamp = this.dateFormatter.format(event.timestamp());
-        String className = event.className() + thread;
-        String level = event.level() + category;
-        String message = event.message();
-
-
-        return "(" + timestamp + ") [" + className + "] <" + level + "> " + message;
-    }
-
-
+    // PUBLIC STATIC
     public static PlainFormatter instance()
     {
         return INSTANCE;
     }
+    // ~~PUBLIC STATIC~~
+
+    // PUBLIC
+    @Override
+    public String format(LogEvent event)
+    {
+        LogContext context = event.context();
+        LogThread thread = event.thread();
+        LogException exception = event.exception();
+
+        Object category = context.get(
+                LogContextKeys.CATEGORY
+        );
+
+        Instant timestamp = event.timestamp();
+        String className = event.className();
+        LogLevel level = event.level();
+        String message = event.message();
+
+
+        String formattedThread = "";
+        if(thread != null)
+        {
+            String threadName = thread.name();
+
+            formattedThread =
+                    "-" +
+                            ((threadName.isBlank()) ?
+                                    "thread" + thread.id() :
+                                    threadName);
+        }
+
+        String formattedException = "";
+        if(exception != null)
+        {
+            formattedException =
+                    "\n" +
+                    exception.stackTrace();
+        }
+
+        String formattedCategory = "";
+        if(category != null)
+        {
+            formattedCategory =
+                    "-" +
+                            category;
+        }
+
+
+        String formattedTimestamp = dateFormatter.format(timestamp);
+        String formattedClassName = className + formattedThread;
+        String formattedLevel = level.toString() + formattedCategory;
+
+
+        return "(" + formattedTimestamp + ") [" + formattedClassName + "] <" + formattedLevel + "> " + message + formattedException;
+    }
+    // ~~PUBLIC~~
 }

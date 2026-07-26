@@ -4,19 +4,32 @@ package cat.breadcat.logger.sink;
 import cat.breadcat.logger.event.LogEvent;
 import cat.breadcat.logger.formatter.LogFormatter;
 
+import java.util.Objects;
+
 
 public abstract class AbstractLogSink implements LogSink
 {
+    // CONSTRUCTOR
     private final LogFormatter formatter;
 
-    public AbstractLogSink(LogFormatter formatter)
+    public AbstractLogSink(
+            LogFormatter formatter
+    )
     {
+        Objects.requireNonNull(formatter, "formatter");
+
         this.formatter = formatter;
     }
+    // ~~CONSTRUCTOR~~
 
-
-    protected String format(LogEvent event)
+    // PROTECTED
+    protected String format(
+            LogEvent event
+    )
     {
-        return this.formatter.format(event);
+        return formatter.format(
+                event
+        );
     }
+    // ~~PROTECTED~~
 }

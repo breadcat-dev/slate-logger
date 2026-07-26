@@ -1,62 +1,99 @@
 package cat.breadcat.logger.formatter;
 
 
+import cat.breadcat.logger.LogLevel;
 import cat.breadcat.logger.ansi.Ansi;
 import cat.breadcat.logger.ansi.AnsiColor;
-import cat.breadcat.logger.event.Log;
-import cat.breadcat.logger.event.LogContext;
-import cat.breadcat.logger.event.LogContextKeys;
-import cat.breadcat.logger.event.LogEvent;
+import cat.breadcat.logger.event.*;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 
 public final class ColorFormatter implements LogFormatter
 {
+    // CONSTRUCTOR
     private static final ColorFormatter INSTANCE = new ColorFormatter();
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-            .withZone(ZoneId.systemDefault());
+            .ofPattern(
+                    "yyyy-MM-dd HH:mm:ss.SSS"
+            )
+            .withZone(
+                    ZoneId.systemDefault()
+            );
 
     private ColorFormatter() {}
+    // ~~CONSTRUCTOR~~
 
-
-    @Override
-    public String format(LogEvent event)
-    {
-        LogContext context = event.context();
-
-        String thread = "";
-        if(context.has(LogContextKeys.THREAD_NAME) && context.has(LogContextKeys.THREAD_ID))
-        {
-            String threadName = context.get(LogContextKeys.THREAD_NAME).toString();
-            String threadId = context.get(LogContextKeys.THREAD_ID).toString();
-            thread = "-" + (threadName.isBlank() ? "thread" + threadId : threadName);
-        }
-
-        String category = "";
-        if(context.has(LogContextKeys.CATEGORY))
-            category = "-" + context.get(LogContextKeys.CATEGORY).toString();
-
-
-        String timestamp = this.dateFormatter.format(event.timestamp());
-        String className = event.className() + thread;
-        String level = event.level() + category;
-
-        String coloredTimestamp = Ansi.color(timestamp, AnsiColor.CYAN);
-        String coloredClassName = Ansi.color(className, AnsiColor.MAGENTA);
-        String coloredLevel = Ansi.color(level, event.level().color());
-        String message = event.message();
-
-
-        return "(" + coloredTimestamp + ") [" + coloredClassName + "] <" + coloredLevel + "> " + message;
-    }
-
-
+    // PUBLIC STATIC
     public static ColorFormatter instance()
     {
         return INSTANCE;
     }
+    // ~~PUBLIC STATIC~~
+
+    // PUBLIC
+    @Override
+    public String format(LogEvent event)
+    {
+        LogContext context = event.context();
+        LogThread thread = event.thread();
+        LogException exception = event.exception();
+
+        Object category = context.get(
+                LogContextKeys.CATEGORY
+        );
+
+        Instant timestamp = event.timestamp();
+        String className = event.className();
+        LogLevel level = event.level();
+        String message = event.message();
+
+
+        String formattedThread = "";
+        if(thread != null)
+        {
+            String threadName = thread.name();
+
+            formattedThread =
+                    "-" +
+                    ((threadName.isBlank()) ?
+                    "thread" + thread.id() :
+                    threadName);
+        }
+
+        String formattedException = "";
+        if(exception != null)
+        {
+            formattedException =
+                    "\n" +
+                    exception.stackTrace();
+        }
+
+        String formattedCategory = "";
+        if(category != null)
+        {
+            formattedCategory =
+                    "-" +
+                    category;
+        }
+
+        String formattedTimestamp = dateFormatter.format(timestamp);
+        String formattedClassName = className + formattedThread;
+        String formattedLevel = level.toString() + formattedCategory;
+
+
+        String coloredException = Ansi.color(formattedException, level.color());
+
+        String coloredTimestamp = Ansi.color(formattedTimestamp, AnsiColor.CYAN);
+        String coloredClassName = Ansi.color(formattedClassName, AnsiColor.MAGENTA);
+        String coloredLevel = Ansi.color(formattedLevel, level.color());
+
+
+        return "(" + coloredTimestamp + ") [" + coloredClassName + "] <" + coloredLevel + "> " + message + coloredException;
+    }
+    // ~~PUBLIC~~
 }

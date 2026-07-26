@@ -1,8 +1,12 @@
 package cat.breadcat.logger.ansi;
 
 
+import java.util.Objects;
+
+
 public enum AnsiColor
 {
+    // DECLARATION
     RESET("\u001B[0m"),
 
     BLACK("\u001B[30m"),
@@ -22,17 +26,23 @@ public enum AnsiColor
     BRIGHT_MAGENTA("\u001B[95m"),
     BRIGHT_CYAN("\u001B[96m"),
     BRIGHT_WHITE("\u001B[97m");
+    // ~~DECLARATION~~
 
-
+    // CONSTRUCTOR
     private final String code;
 
-    AnsiColor(String code)
+    AnsiColor(
+            String code
+    )
     {
         this.code = code;
     }
+    // ~~CONSTRUCTOR~~
 
+    // PUBLIC
     public String code()
     {
         return code;
     }
+    // ~~PUBLIC~~
 }

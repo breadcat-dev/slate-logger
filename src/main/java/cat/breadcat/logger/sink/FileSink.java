@@ -14,33 +14,50 @@ import java.nio.file.Path;
 
 public final class FileSink extends AbstractLogSink
 {
+    // CONSTRUCTOR
     private final PrintStream out;
 
-    public FileSink(LogFormatter formatter, Path file)
+    public FileSink(
+            LogFormatter formatter,
+            Path file
+    )
     {
         super(formatter);
 
         try
         {
             Path parent = file.getParent();
-            if (parent != null)
+            if(parent != null)
                 Files.createDirectories(parent);
 
             this.out = new PrintStream(
-                    new FileOutputStream(file.toFile(), false),
+                    new FileOutputStream(
+                            file.toFile(),
+                            true
+                    ),
                     true,
                     StandardCharsets.UTF_8
             );
         }
         catch(IOException e)
         {
-            throw new RuntimeException("Failed to initialize FileSink for path: " + file, e);
+            throw new RuntimeException(
+                    "Failed to initialize FileSink for path: " + file,
+                    e
+            );
         }
     }
+    // ~~CONSTRUCTOR~~
 
+    // PUBLIC
     @Override
-    public void log(LogEvent event)
+    public void log(
+            LogEvent event
+    )
     {
-        out.println(format(event));
+        out.println(
+                format(event)
+        );
     }
+    // ~~PUBLIC~~
 }

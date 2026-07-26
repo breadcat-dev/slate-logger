@@ -3,41 +3,75 @@ package cat.breadcat.logger.event;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public final class LogContext
 {
+    // CONSTRUCTOR
     private final Map<String, Object> context;
 
-    private LogContext(Map<String, Object> context)
+    private LogContext(
+            Map<String, Object> context
+    )
     {
         this.context = Map.copyOf(context);
     }
+    // ~~CONSTRUCTOR~~
 
-
+    // PUBLIC STATIC
     public static LogContext empty()
     {
-        return new LogContext(Map.of());
+        return new LogContext(
+                Map.of()
+        );
     }
+    // ~~PUBLIC STATIC~~
 
-
-    public LogContext with(String key, Object value)
+    // PUBLIC
+    public LogContext with(
+            String key, Object value
+    )
     {
         Map<String, Object> context = new HashMap<>(this.context);
-        context.put(key, value);
+        context.put(
+                Objects.requireNonNull(
+                        key,
+                        "key"
+                ),
+                Objects.requireNonNull(
+                        value,
+                        "value"
+                )
+        );
 
         return new LogContext(context);
     }
 
 
-    public Object get(String key)
+    public Object get(
+            String key
+    )
     {
-        return this.context.get(key);
+        return context.get(
+                Objects.requireNonNull(
+                        key,
+                        "key"
+                )
+        );
     }
 
 
-    public boolean has(String key)
+    public boolean has(
+            String key
+    )
     {
-        return this.context.get(key) != null;
+        return context.containsKey(
+                Objects.requireNonNull(
+                        key,
+                        "key"
+                )
+        );
     }
+    // ~~PUBLIC~~
 }

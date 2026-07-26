@@ -9,6 +9,7 @@ import java.util.List;
 
 public final class LoggerBuilder
 {
+    // CONSTRUCTOR
     private final List<AbstractLogSink> sinks;
     private LogLevel minimum;
     private String className;
@@ -21,29 +22,38 @@ public final class LoggerBuilder
         this.className = "Root";
         this.captureThread = false;
     }
+    // ~~CONSTRUCTOR~~
 
-
-    public LoggerBuilder setClassName(String className)
+    // PUBLIC
+    public LoggerBuilder setClassName(
+            String className
+    )
     {
         this.className = className;
         return this;
     }
 
-    public LoggerBuilder setClassName(Class<?> clazz)
+    public LoggerBuilder setClassName(
+            Class<?> clazz
+    )
     {
         this.className = clazz.getSimpleName();
         return this;
     }
 
 
-    public LoggerBuilder addSink(AbstractLogSink sink)
+    public LoggerBuilder addSink(
+            AbstractLogSink sink
+    )
     {
         this.sinks.add(sink);
         return this;
     }
 
 
-    public LoggerBuilder setMinimum(LogLevel level)
+    public LoggerBuilder setMinimum(
+            LogLevel level
+    )
     {
         this.minimum = level;
         return this;
@@ -66,4 +76,5 @@ public final class LoggerBuilder
                 captureThread
         );
     }
+    // ~~PUBLIC~~
 }

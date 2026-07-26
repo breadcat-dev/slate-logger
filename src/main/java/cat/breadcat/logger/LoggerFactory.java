@@ -12,10 +12,14 @@ import java.nio.file.Path;
 
 public final class LoggerFactory
 {
+    // CONSTRUCTOR
     private LoggerFactory() {}
+    // ~~CONSTRUCTOR~~
 
-
-    public static Logger console(Class<?> clazz)
+    // PUBLIC STATIC
+    public static Logger console(
+            Class<?> clazz
+    )
     {
         return new Logger(
                 new AbstractLogSink[]{
@@ -27,7 +31,10 @@ public final class LoggerFactory
         );
     }
 
-    public static Logger file(Class<?> clazz, Path file)
+    public static Logger file(
+            Class<?> clazz,
+            Path file
+    )
     {
         return new Logger(
                 new AbstractLogSink[]{
@@ -39,7 +46,10 @@ public final class LoggerFactory
         );
     }
 
-    public static Logger consoleAndFile(Class<?> clazz, Path file)
+    public static Logger consoleAndFile(
+            Class<?> clazz,
+            Path file
+    )
     {
         return new Logger(
                 new AbstractLogSink[]{
@@ -51,4 +61,5 @@ public final class LoggerFactory
                 false
         );
     }
+    // ~~PUBLIC STATIC~~
 }

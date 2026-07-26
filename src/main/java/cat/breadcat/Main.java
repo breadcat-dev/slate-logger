@@ -3,12 +3,13 @@ package cat.breadcat;
 
 import cat.breadcat.logger.LogLevel;
 import cat.breadcat.logger.Logger;
-import cat.breadcat.logger.event.Log;
 import cat.breadcat.logger.formatter.ColorFormatter;
 import cat.breadcat.logger.formatter.PlainFormatter;
 import cat.breadcat.logger.sink.ConsoleSink;
 import cat.breadcat.logger.sink.FileSink;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 
 
@@ -18,17 +19,65 @@ public class Main
     {
         // final Logger LOGGER = LoggerFactory.console(Main.class);
         final Logger LOGGER = Logger.builder()
-                .setClassName(Main.class)
-                .addSink(new ConsoleSink(ColorFormatter.instance()))
-                .addSink(new FileSink(PlainFormatter.instance(), Path.of("./debug.log")))
-                .setMinimum(LogLevel.INFO)
+                .setClassName(
+                        Main.class
+                )
+                .addSink(
+                        new ConsoleSink(
+                                ColorFormatter.instance()
+                        )
+                )
+                .addSink(
+                        new FileSink(
+                                PlainFormatter.instance(),
+                                Path.of("./debug.log")
+                        )
+                )
+                .setMinimum(
+                        LogLevel.DEBUG
+                )
                 .captureThread()
                 .build();
 
-        LOGGER.log(Log.debug("debug"));
-        LOGGER.log(Log.info("info"));
-        LOGGER.log(Log.warn("warn"));
-        LOGGER.log(Log.error("error").with("custom_context", 1337));
-        LOGGER.log(Log.critical("critical").category("pc-go-boom"));
+
+        // Simple logging
+        LOGGER.info("hello");
+
+        // Getting a test exception (YOU CAN IGNORE THIS PART, I KNOW IT S UGLY)
+        IOException exception = new IOException();
+        try(FileInputStream fileInputStream = new FileInputStream("./tz"))
+        {
+
+        }
+        catch(IOException e)
+        {
+            exception = e;
+        }
+        final IOException finalException = exception; // Needed for lambda
+
+        // Exception logging + message formatting
+        LOGGER.atError()
+                .category("crash")
+                .exception(exception)
+                .log("test message by {} from {} ago", "BreadCat", null);
+
+        // Different thread
+        Thread.startVirtualThread(() ->
+        {
+            LOGGER.atWarn()
+                    .category("possible-crash")
+                    .exception(finalException)
+                    .log("A possible crash may happen");
+        });
+
+        // Sleep so the other thread has a chance to log
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch(InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

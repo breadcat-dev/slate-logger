@@ -3,9 +3,11 @@ package cat.breadcat.logger.event;
 
 public final class LogContextKeys
 {
+    // CONSTRUCTOR
     private LogContextKeys() {}
+    // ~~CONSTRUCTOR~~
 
-    public static final String THREAD_NAME = "threadName";
-    public static final String THREAD_ID = "threadId";
+    // PUBLIC STATIC
     public static final String CATEGORY = "category";
+    // ~~PUBLIC STATIC~~
 }

@@ -19,6 +19,8 @@
 - Dependency-free
 - Custom sinks
 - Custom formatters
+- `{}` formatting
+- Exception logging
 - Context-aware logging
 - ANSI color support
 - Thread capture
@@ -98,11 +100,15 @@ public class Main
                 .captureThread()
                 .build();
 
-        LOGGER.log(Log.debug("debug"));
-        LOGGER.log(Log.info("info"));
-        LOGGER.log(Log.warn("warn"));
-        LOGGER.log(Log.error("error").with("custom-context", 1337));
-        LOGGER.log(Log.critical("critical").category("pc-go-boom"));
+        LOGGER.debug("debug");
+        LOGGER.info("info");
+        LOGGER.warn("warn");
+        LOGGER.atError()
+                .with("custom-context", 1337)
+                .log("error");
+        LOGGER.atCritical()
+                .category("boom")
+                .log("critical");
     }
 }
 ```
@@ -110,7 +116,7 @@ public class Main
 
 ## Examples
 
-### Custom Formatter
+### Custom Formatter (v0.1.0-alpha)
 
 ```java
 public final class NetworkFormatter implements LogFormatter
@@ -147,7 +153,7 @@ public final class NetworkFormatter implements LogFormatter
 
         String timestamp = this.dateFormatter.format(event.timestamp());
         String className = event.className() + thread;
-        String user = context.get("user").toString() + " - " + context.get("address").toString();
+        String user = context.get("user").toString() + "-" + context.get("address").toString();
         String level = event.level() + category;
 
         String coloredTimestamp = Ansi.color(timestamp, AnsiColor.CYAN);
@@ -176,29 +182,26 @@ final Logger LOGGER = Logger.builder()
         .addSink(new ConsoleSink(NetworkFormatter.instance()))
         .build();
 
-long threadId = Thread.currentThread().threadId();
+LOGGER.atError()
+        .category("connection")
+        .with("user", "BreadCat")
+        .with("address", "127.0.0.1:25565")
+        .log("BreadCat has left the server");
 
-LOGGER.log(
-        Log.error("BreadCat has left the server")
-                .category("connection")
-                .threadName("network" + threadId)
-                .threadId(threadId)
-                .with("user", "BreadCat")
-                .with("address", "127.0.0.1:25565")
-);
 ```
 
 ### Console
 
 ```text
-(2026-07-25 19:37:41.755) [Main-network1] {BreadCat - 127.0.0.1:25565} <ERROR-connection> BreadCat has left the server
+(2026-07-26 20:09:39.818) [Main-main] {BreadCat-127.0.01:25565} <ERROR-connection> BreadCat has left the server
 ```
 
 
 ## Roadmap
 
-- "{}" formatting
-- exception logging
+- optimize
+- async logging (toggleable)
+- log rotation
 - final API cleanup
 
 

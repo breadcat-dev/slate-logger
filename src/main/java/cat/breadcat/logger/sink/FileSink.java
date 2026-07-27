@@ -18,8 +18,7 @@ public final class FileSink extends AbstractLogSink
     private final PrintStream out;
 
     public FileSink(
-            LogFormatter formatter,
-            Path file
+            LogFormatter formatter, Path file
     )
     {
         super(formatter);
@@ -32,8 +31,7 @@ public final class FileSink extends AbstractLogSink
 
             this.out = new PrintStream(
                     new FileOutputStream(
-                            file.toFile(),
-                            true
+                            file.toFile(), true
                     ),
                     true,
                     StandardCharsets.UTF_8
@@ -42,8 +40,7 @@ public final class FileSink extends AbstractLogSink
         catch(IOException e)
         {
             throw new RuntimeException(
-                    "Failed to initialize FileSink for path: " + file,
-                    e
+                    "Failed to initialize FileSink for path: " + file, e
             );
         }
     }

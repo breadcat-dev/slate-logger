@@ -11,16 +11,26 @@ public final class LogException
     // CONSTRUCTOR
     private final Throwable throwable;
 
-    public LogException(
+    private LogException(
             Throwable throwable
     )
     {
         this.throwable = Objects.requireNonNull(
-                throwable,
-                "throwable"
+                throwable, "throwable"
         );
     }
     // ~~CONSTRUCTOR~~
+
+    // PUBLIC STATIC
+    public static LogException of(
+            Throwable throwable
+    )
+    {
+        return new LogException(
+                throwable
+        );
+    }
+    // ~~PUBLIC STATIC~~
 
     // PUBLIC
     public String message()

@@ -1,7 +1,7 @@
 package cat.breadcat.logger;
 
 
-import cat.breadcat.logger.sink.AbstractLogSink;
+import cat.breadcat.logger.sink.LogSink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,17 @@ import java.util.List;
 public final class LoggerBuilder
 {
     // CONSTRUCTOR
-    private final List<AbstractLogSink> sinks;
+    private final List<LogSink> sinks;
     private LogLevel minimum;
     private String className;
     private boolean captureThread;
+
 
     LoggerBuilder()
     {
         this.sinks = new ArrayList<>();
         this.minimum = LogLevel.DEBUG;
-        this.className = "Root";
+        this.className = "Unknown";
         this.captureThread = false;
     }
     // ~~CONSTRUCTOR~~
@@ -43,7 +44,7 @@ public final class LoggerBuilder
 
 
     public LoggerBuilder addSink(
-            AbstractLogSink sink
+            LogSink sink
     )
     {
         this.sinks.add(sink);
@@ -70,7 +71,7 @@ public final class LoggerBuilder
     public Logger build()
     {
         return new Logger(
-                sinks.toArray(AbstractLogSink[]::new),
+                sinks.toArray(LogSink[]::new),
                 minimum,
                 className,
                 captureThread

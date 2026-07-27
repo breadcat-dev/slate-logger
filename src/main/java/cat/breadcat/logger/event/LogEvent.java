@@ -3,8 +3,6 @@ package cat.breadcat.logger.event;
 
 import cat.breadcat.logger.LogLevel;
 
-import java.time.Instant;
-
 
 public record LogEvent(
         // DEFINITION
@@ -12,7 +10,7 @@ public record LogEvent(
         LogException exception,
         LogThread thread,
 
-        Instant timestamp,
+        LogTimestamp timestamp,
         String className,
         LogLevel level,
         String message

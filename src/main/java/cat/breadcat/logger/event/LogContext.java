@@ -36,12 +36,10 @@ public final class LogContext
         Map<String, Object> context = new HashMap<>(this.context);
         context.put(
                 Objects.requireNonNull(
-                        key,
-                        "key"
+                        key, "key"
                 ),
                 Objects.requireNonNull(
-                        value,
-                        "value"
+                        value, "value"
                 )
         );
 
@@ -55,8 +53,7 @@ public final class LogContext
     {
         return context.get(
                 Objects.requireNonNull(
-                        key,
-                        "key"
+                        key, "key"
                 )
         );
     }
@@ -68,8 +65,7 @@ public final class LogContext
     {
         return context.containsKey(
                 Objects.requireNonNull(
-                        key,
-                        "key"
+                        key, "key"
                 )
         );
     }

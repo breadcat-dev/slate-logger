@@ -12,14 +12,13 @@ public final class Ansi
 
     // PUBLIC STATIC
     public static String color(
-            String text,
-            AnsiColor color
+            String text, AnsiColor color
     )
     {
-        Objects.requireNonNull(text, "text");
-        Objects.requireNonNull(color, "color");
-
-        return color.code() + text + AnsiColor.RESET.code();
+        return
+                Objects.requireNonNull(color, "color").code() +
+                Objects.requireNonNull(text, "text") +
+                AnsiColor.RESET.code();
     }
     // ~~PUBLIC STATIC~~
 }

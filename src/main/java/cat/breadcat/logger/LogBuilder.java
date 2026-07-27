@@ -55,13 +55,9 @@ public final class LogBuilder
     }
 
 
-    public LogBuilder exception(
-            Throwable throwable
-    )
+    public LogBuilder exception(Throwable throwable)
     {
-        this.exception = new LogException(
-                throwable
-        );
+        this.exception = LogException.of(throwable);
 
         return this;
     }

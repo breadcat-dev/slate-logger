@@ -9,11 +9,12 @@ public final class LogThread
     // CONSTRUCTOR
     private final Thread thread;
 
-    private LogThread(Thread thread)
+    private LogThread(
+            Thread thread
+    )
     {
         this.thread = Objects.requireNonNull(
-                thread,
-                "thread"
+                thread, "thread"
         );
     }
     // ~~CONSTRUCTOR~~
@@ -21,7 +22,9 @@ public final class LogThread
     // PUBLIC STATIC
     public static LogThread capture()
     {
-        return new LogThread(Thread.currentThread());
+        return new LogThread(
+                Thread.currentThread()
+        );
     }
     // ~~PUBLIC STATIC~~
 

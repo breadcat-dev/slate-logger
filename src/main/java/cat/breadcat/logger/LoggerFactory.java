@@ -32,8 +32,7 @@ public final class LoggerFactory
     }
 
     public static Logger file(
-            Class<?> clazz,
-            Path file
+            Class<?> clazz, Path file
     )
     {
         return new Logger(
@@ -47,8 +46,7 @@ public final class LoggerFactory
     }
 
     public static Logger consoleAndFile(
-            Class<?> clazz,
-            Path file
+            Class<?> clazz, Path file
     )
     {
         return new Logger(

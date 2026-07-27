@@ -1,49 +1,46 @@
 package cat.breadcat.logger;
 
 
-import cat.breadcat.logger.event.LogContext;
-import cat.breadcat.logger.event.LogEvent;
-import cat.breadcat.logger.event.LogException;
-import cat.breadcat.logger.event.LogThread;
-import cat.breadcat.logger.sink.AbstractLogSink;
+import cat.breadcat.logger.event.*;
+import cat.breadcat.logger.sink.LogSink;
 
-import java.time.Instant;
 import java.util.Objects;
 
 
 public final class Logger
 {
     // CONSTRUCTOR
-    private final AbstractLogSink[] sinks;
+    private final LoggingSystem system;
+
+    private final LogSink[] sinks;
     private final LogLevel minimum;
     private final String className;
     private final boolean captureThread;
 
     Logger(
-            AbstractLogSink[] sinks,
-            LogLevel minimum,
-            String className,
-            boolean captureThread
+            LogSink[] sinks, LogLevel minimum,
+            String className, boolean captureThread
     )
     {
+        this.system = LoggingSystem.instance();
+
         this.sinks = Objects.requireNonNull(
-                sinks,
-                "sinks"
+                sinks, "sinks"
         );
         this.minimum = Objects.requireNonNull(
-                minimum,
-                "minimum"
+                minimum, "minimum"
         );
         this.className = Objects.requireNonNull(
-                className,
-                "className"
+                className, "className"
         );
         this.captureThread = captureThread;
     }
     // ~~CONSTRUCTOR~~
 
     // PRIVATE
-    private String format(String message, Object... args)
+    private String format(
+            String message, Object... args
+    )
     {
         if(message.length() < 2 || args.length == 0)
             return message;
@@ -68,15 +65,15 @@ public final class Logger
                 stringBuilder.append(message.charAt(i));
         }
 
+
         return stringBuilder.toString();
     }
+    // ~~PRIVATE~~
 
     // PACKAGE-PRIVATE
     void log(
-            LogContext context,
-            LogException exception,
-            LogLevel level,
-            String message,
+            LogContext context, LogException exception,
+            LogLevel level, String message,
             Object... args
     )
     {
@@ -84,30 +81,27 @@ public final class Logger
             return;
 
 
-        Instant timestamp = Instant.now();
         LogThread thread = captureThread ? LogThread.capture() : null;
+        LogTimestamp timestamp = LogTimestamp.capture();
+
         String formattedMessage = format(
                 Objects.requireNonNull(
-                        message,
-                        "message"
+                        message, "message"
                 ),
                 args
         );
 
         LogEvent event = new LogEvent(
-                context,
-                exception,
-                thread,
-
-                timestamp,
-                className,
-                level,
+                context, exception, thread,
+                timestamp, className, level,
             formattedMessage
         );
 
 
-        for(AbstractLogSink sink : sinks)
-            sink.log(event);
+        system.submit(new LogTask(
+                event,
+                sinks
+        ));
     }
     // ~~PACKAGE-PRIVATE~~
 
@@ -120,8 +114,7 @@ public final class Logger
 
     // PUBLIC
     public void debug(
-            String message,
-            Object... args
+            String message, Object... args
     )
     {
         log(
@@ -134,8 +127,7 @@ public final class Logger
     }
 
     public void info(
-            String message,
-            Object... args
+            String message, Object... args
     )
     {
         log(
@@ -148,21 +140,20 @@ public final class Logger
     }
 
     public void warn(
-            String message,
-            Object... args
+            String message, Object... args
     )
     {
         log(
                 LogContext.empty(),
                 null,
                 LogLevel.WARN,
-                message
+                message,
+                args
         );
     }
 
     public void error(
-            String message,
-            Object... args
+            String message, Object... args
     )
     {
         log(
@@ -175,8 +166,7 @@ public final class Logger
     }
 
     public void critical(
-            String message,
-            Object... args
+            String message, Object... args
     )
     {
         log(

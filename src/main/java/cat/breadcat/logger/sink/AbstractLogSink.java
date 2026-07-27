@@ -16,9 +16,9 @@ public abstract class AbstractLogSink implements LogSink
             LogFormatter formatter
     )
     {
-        Objects.requireNonNull(formatter, "formatter");
-
-        this.formatter = formatter;
+        this.formatter = Objects.requireNonNull(
+                formatter, "formatter"
+        );
     }
     // ~~CONSTRUCTOR~~
 
@@ -27,9 +27,7 @@ public abstract class AbstractLogSink implements LogSink
             LogEvent event
     )
     {
-        return formatter.format(
-                event
-        );
+        return formatter.format(event);
     }
     // ~~PROTECTED~~
 }

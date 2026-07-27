@@ -6,24 +6,10 @@ import cat.breadcat.logger.ansi.Ansi;
 import cat.breadcat.logger.ansi.AnsiColor;
 import cat.breadcat.logger.event.*;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-
-
 public final class ColorFormatter implements LogFormatter
 {
     // CONSTRUCTOR
     private static final ColorFormatter INSTANCE = new ColorFormatter();
-
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter
-            .ofPattern(
-                    "yyyy-MM-dd HH:mm:ss.SSS"
-            )
-            .withZone(
-                    ZoneId.systemDefault()
-            );
 
     private ColorFormatter() {}
     // ~~CONSTRUCTOR~~
@@ -47,7 +33,7 @@ public final class ColorFormatter implements LogFormatter
                 LogContextKeys.CATEGORY
         );
 
-        Instant timestamp = event.timestamp();
+        LogTimestamp timestamp = event.timestamp();
         String className = event.className();
         LogLevel level = event.level();
         String message = event.message();
@@ -81,7 +67,7 @@ public final class ColorFormatter implements LogFormatter
                     category;
         }
 
-        String formattedTimestamp = dateFormatter.format(timestamp);
+        String formattedTimestamp = timestamp.format();
         String formattedClassName = className + formattedThread;
         String formattedLevel = level.toString() + formattedCategory;
 

@@ -15,13 +15,12 @@ import java.nio.file.Path;
 
 public class Main
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
         // final Logger LOGGER = LoggerFactory.console(Main.class);
+
         final Logger LOGGER = Logger.builder()
-                .setClassName(
-                        Main.class
-                )
+                .setClassName(Main.class)
                 .addSink(
                         new ConsoleSink(
                                 ColorFormatter.instance()
@@ -33,9 +32,7 @@ public class Main
                                 Path.of("./debug.log")
                         )
                 )
-                .setMinimum(
-                        LogLevel.DEBUG
-                )
+                .setMinimum(LogLevel.DEBUG)
                 .captureThread()
                 .build();
 
@@ -79,5 +76,22 @@ public class Main
         {
             throw new RuntimeException(e);
         }
+
+        /*for(int i = 0; i < 100; i++)
+        {
+            Thread.ofVirtual()
+                    .name("test" + i)
+                    .start(() ->
+            {
+                Logger logger = Logger.builder()
+                        .setClassName(Main.class)
+                        .addSink(new ConsoleSink(ColorFormatter.instance()))
+                        .captureThread()
+                        .build();
+
+                for(int j = 0; j < 100; j++)
+                    logger.info("{}", j);
+            });
+        }*/
     }
 }

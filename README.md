@@ -20,6 +20,7 @@
 - Custom sinks
 - Custom formatters
 - `{}` formatting
+- Async logging
 - Exception logging
 - Context-aware logging
 - ANSI color support
@@ -109,6 +110,24 @@ public class Main
         LOGGER.atCritical()
                 .category("boom")
                 .log("critical");
+        
+
+        for(int i = 0; i < 100; i++)
+        {
+            Thread.ofVirtual()
+                    .name("test" + i)
+                    .start(() ->
+                    {
+                        Logger logger = Logger.builder()
+                                .setClassName(Main.class)
+                                .addSink(new ConsoleSink(ColorFormatter.instance()))
+                                .captureThread()
+                                .build();
+
+                        for(int j = 0; j < 100; j++)
+                            logger.info("{}", j);
+                    });
+        }
     }
 }
 ```
@@ -116,60 +135,88 @@ public class Main
 
 ## Examples
 
-### Custom Formatter (v0.1.0-alpha)
+### Custom Formatter
 
 ```java
 public final class NetworkFormatter implements LogFormatter
 {
     private static final NetworkFormatter INSTANCE = new NetworkFormatter();
 
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-            .withZone(ZoneId.systemDefault());
-
     private NetworkFormatter() {}
+
+
+
+    public static NetworkFormatter instance()
+    {
+        return INSTANCE;
+    }
+
 
 
     @Override
     public String format(LogEvent event)
     {
         LogContext context = event.context();
+        LogThread thread = event.thread();
+        LogException exception = event.exception();
 
-        if(!(context.has("user") && context.has("address")))
-            // something happened
+        Object category = context.get(
+                LogContextKeys.CATEGORY
+        );
 
-        String thread = "";
-        if(context.has(LogContextKeys.THREAD_NAME) && context.has(LogContextKeys.THREAD_ID))
-        {
-            String threadName = context.get(LogContextKeys.THREAD_NAME).toString();
-            String threadId = context.get(LogContextKeys.THREAD_ID).toString();
-            thread = "-" + (threadName.isBlank() ? "thread" + threadId : threadName);
-        }
+        Object user = context.get("user");
+        Object address = context.get("address");
 
-        String category = "";
-        if(context.has(LogContextKeys.CATEGORY))
-            category = "-" + context.get(LogContextKeys.CATEGORY).toString();
-
-
-        String timestamp = this.dateFormatter.format(event.timestamp());
-        String className = event.className() + thread;
-        String user = context.get("user").toString() + "-" + context.get("address").toString();
-        String level = event.level() + category;
-
-        String coloredTimestamp = Ansi.color(timestamp, AnsiColor.CYAN);
-        String coloredClassName = Ansi.color(className, AnsiColor.MAGENTA);
-        String coloredLevel = Ansi.color(level, event.level().color());
-        String coloredUser = Ansi.color(user, AnsiColor.RED);
+        LogTimestamp timestamp = event.timestamp();
+        String className = event.className();
+        LogLevel level = event.level();
         String message = event.message();
 
 
-        return "(" + coloredTimestamp + ") [" + coloredClassName + "] {" + coloredUser + "} <" + coloredLevel + "> " + message;
-    }
+        String formattedThread = "";
+        if(thread != null)
+        {
+            String threadName = thread.name();
+
+            formattedThread =
+                    "-" +
+                            ((threadName.isBlank()) ?
+                                    "thread" + thread.id() :
+                                    threadName);
+        }
+
+        String formattedException = "";
+        if(exception != null)
+        {
+            formattedException =
+                    "\n" +
+                            exception.stackTrace();
+        }
+
+        String formattedCategory = "";
+        if(category != null)
+        {
+            formattedCategory =
+                    "-" +
+                            category;
+        }
+
+        String formattedUser = user + "-" + address;
+
+        String formattedTimestamp = timestamp.format();
+        String formattedClassName = className + formattedThread;
+        String formattedLevel = level.toString() + formattedCategory;
 
 
-    public static NetworkFormatter instance()
-    {
-        return INSTANCE;
+        String coloredException = Ansi.color(formattedException, level.color());
+        String coloredUser = Ansi.color(formattedUser, AnsiColor.YELLOW);
+
+        String coloredTimestamp = Ansi.color(formattedTimestamp, AnsiColor.CYAN);
+        String coloredClassName = Ansi.color(formattedClassName, AnsiColor.MAGENTA);
+        String coloredLevel = Ansi.color(formattedLevel, level.color());
+
+
+        return "(" + coloredTimestamp + ") [" + coloredClassName + "] {" + coloredUser + "} <" + coloredLevel + "> " + message + coloredException;
     }
 }
 ```
@@ -179,28 +226,30 @@ public final class NetworkFormatter implements LogFormatter
 ```java
 final Logger LOGGER = Logger.builder()
         .setClassName(Main.class)
-        .addSink(new ConsoleSink(NetworkFormatter.instance()))
+        .addSink(
+                new ConsoleSink(
+                        NetworkFormatter.instance()
+                )
+        )
         .build();
 
-LOGGER.atError()
-        .category("connection")
-        .with("user", "BreadCat")
-        .with("address", "127.0.0.1:25565")
-        .log("BreadCat has left the server");
-
+        LOGGER.atError()
+                .category("crash")
+                .with("user", "BreadCat")
+                .with("address", "127.0.0.1")
+                .log("A user has crashed.");
 ```
 
 ### Console
 
 ```text
-(2026-07-26 20:09:39.818) [Main-main] {BreadCat-127.0.01:25565} <ERROR-connection> BreadCat has left the server
+(2026-07-27 18:46:38.765) [Main] {BreadCat-127.0.0.1} <ERROR-crash> A user has crashed.
 ```
 
 
 ## Roadmap
 
 - optimize
-- async logging (toggleable)
 - log rotation
 - final API cleanup
 

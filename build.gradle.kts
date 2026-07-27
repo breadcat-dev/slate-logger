@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "cat.breadcat"
-version = "0.2.0-alpha"
+version = "0.3.0-alpha"
 
 repositories {
     mavenCentral()

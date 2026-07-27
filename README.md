@@ -6,7 +6,7 @@
 
 ![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-blue)
 ![Java](https://img.shields.io/badge/Java-21-007396?style=flat&logo=openjdk&logoColor=white)
-![Status](https://img.shields.io/badge/status-alpha-red)
+![Status](https://img.shields.io/badge/status-beta-orange)
 [![Latest Release](https://img.shields.io/github/v/release/breadcat-dev/slate-logger?style=flat&logo=github&color=blue)](https://github.com/breadcat-dev/slate-logger)
 [![Downloads](https://img.shields.io/github/downloads/breadcat-dev/slate-logger/total?style=flat&logo=github&color=brightgreen)](https://github.com/breadcat-dev/slate-logger)
 [![Stars](https://img.shields.io/github/stars/breadcat-dev/slate-logger?style=flat&logo=github&color=yellow)](https://github.com/breadcat-dev/slate-logger)

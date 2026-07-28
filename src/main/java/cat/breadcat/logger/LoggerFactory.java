@@ -4,8 +4,8 @@ package cat.breadcat.logger;
 import cat.breadcat.logger.formatter.ColorFormatter;
 import cat.breadcat.logger.formatter.PlainFormatter;
 import cat.breadcat.logger.sink.ConsoleSink;
-import cat.breadcat.logger.sink.AbstractLogSink;
 import cat.breadcat.logger.sink.FileSink;
+import cat.breadcat.logger.sink.LogSink;
 
 import java.nio.file.Path;
 
@@ -22,7 +22,7 @@ public final class LoggerFactory
     )
     {
         return new Logger(
-                new AbstractLogSink[]{
+                new LogSink[]{
                         new ConsoleSink(ColorFormatter.instance())
                 },
                 LogLevel.DEBUG,
@@ -36,8 +36,10 @@ public final class LoggerFactory
     )
     {
         return new Logger(
-                new AbstractLogSink[]{
-                        new FileSink(PlainFormatter.instance(), file)
+                new LogSink[]{
+                        new FileSink(
+                                PlainFormatter.instance(), file
+                        )
                 },
                 LogLevel.DEBUG,
                 clazz.getSimpleName(),
@@ -50,9 +52,13 @@ public final class LoggerFactory
     )
     {
         return new Logger(
-                new AbstractLogSink[]{
-                        new ConsoleSink(ColorFormatter.instance()),
-                        new FileSink(PlainFormatter.instance(), file)
+                new LogSink[]{
+                        new ConsoleSink(
+                                ColorFormatter.instance()
+                        ),
+                        new FileSink(
+                                PlainFormatter.instance(), file
+                        )
                 },
                 LogLevel.DEBUG,
                 clazz.getSimpleName(),

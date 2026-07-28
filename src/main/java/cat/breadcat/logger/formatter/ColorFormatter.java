@@ -6,10 +6,17 @@ import cat.breadcat.logger.ansi.Ansi;
 import cat.breadcat.logger.ansi.AnsiColor;
 import cat.breadcat.logger.event.*;
 
+import java.util.Objects;
+
+
 public final class ColorFormatter implements LogFormatter
 {
+    // IN - INTERNAL
+    // OUT - EXTERNAL
+
     // CONSTRUCTOR
     private static final ColorFormatter INSTANCE = new ColorFormatter();
+
 
     private ColorFormatter() {}
     // ~~CONSTRUCTOR~~
@@ -25,7 +32,9 @@ public final class ColorFormatter implements LogFormatter
     @Override
     public String format(LogEvent event)
     {
-        LogContext context = event.context();
+        LogContext context = Objects.requireNonNull(
+                event.context(), "context"
+        );
         LogThread thread = event.thread();
         LogException exception = event.exception();
 
@@ -33,10 +42,18 @@ public final class ColorFormatter implements LogFormatter
                 LogContextKeys.CATEGORY
         );
 
-        LogTimestamp timestamp = event.timestamp();
-        String className = event.className();
-        LogLevel level = event.level();
-        String message = event.message();
+        LogTimestamp timestamp = Objects.requireNonNull(
+                event.timestamp(), "timestamp"
+        );
+        String className = Objects.requireNonNull(
+                event.className(), "className"
+        );
+        LogLevel level = Objects.requireNonNull(
+                event.level(), "level"
+        );
+        String message = Objects.requireNonNull(
+                event.message(), "message"
+        );
 
 
         String formattedThread = "";

@@ -9,6 +9,9 @@ import java.util.Objects;
 
 public final class LogTimestamp
 {
+    // IN - INTERNAL
+    // OUT - INTERNAL & EXTERNAL
+
     // CONSTRUCTOR
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter
             .ofPattern(
@@ -19,6 +22,7 @@ public final class LogTimestamp
             );
 
     private final Instant instant;
+
 
     private LogTimestamp(
             Instant instant

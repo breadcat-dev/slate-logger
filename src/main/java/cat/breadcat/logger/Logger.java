@@ -9,6 +9,9 @@ import java.util.Objects;
 
 public final class Logger
 {
+    // IN - EXTERNAL
+    // OUT - EXTERNAL
+
     // CONSTRUCTOR
     private final LoggingSystem system;
 
@@ -22,11 +25,9 @@ public final class Logger
             String className, boolean captureThread
     )
     {
-        this.system = LoggingSystem.instance();
-
         this.sinks = Objects.requireNonNull(
                 sinks, "sinks"
-        );
+        ).clone();
         this.minimum = Objects.requireNonNull(
                 minimum, "minimum"
         );
@@ -34,6 +35,9 @@ public final class Logger
                 className, "className"
         );
         this.captureThread = captureThread;
+
+        this.system = LoggingSystem.instance();
+        this.system.register(sinks);
     }
     // ~~CONSTRUCTOR~~
 
@@ -42,11 +46,15 @@ public final class Logger
             String message, Object... args
     )
     {
-        if(message.length() < 2 || args.length == 0)
+        Objects.requireNonNull(message, "message");
+
+        if(message.length() < 2 || args == null || args.length == 0)
             return message;
 
 
-        StringBuilder stringBuilder = new StringBuilder(message.length() * 2 / 3);
+        StringBuilder stringBuilder = new StringBuilder(
+                message.length() * 2 / 3
+        );
         int argument = 0;
 
         for(int i = 0; i < message.length(); i++)
@@ -58,11 +66,15 @@ public final class Logger
                     argument < args.length
             )
             {
-                stringBuilder.append(args[argument++]);
+                stringBuilder.append(
+                        args[argument++]
+                );
                 i++;
             }
             else
-                stringBuilder.append(message.charAt(i));
+                stringBuilder.append(
+                        message.charAt(i)
+                );
         }
 
 
@@ -72,9 +84,8 @@ public final class Logger
 
     // PACKAGE-PRIVATE
     void log(
-            LogContext context, LogException exception,
-            LogLevel level, String message,
-            Object... args
+            LogContext context, LogException exception, LogLevel level,
+            String message, Object... args
     )
     {
         if(!level.isAtLeast(minimum))
@@ -85,9 +96,7 @@ public final class Logger
         LogTimestamp timestamp = LogTimestamp.capture();
 
         String formattedMessage = format(
-                Objects.requireNonNull(
-                        message, "message"
-                ),
+                message,
                 args
         );
 

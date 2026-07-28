@@ -8,8 +8,12 @@ import java.util.Objects;
 
 public final class LogException
 {
+    // IN - EXTERNAL
+    // OUT - INTERNAL
+
     // CONSTRUCTOR
     private final Throwable throwable;
+
 
     private LogException(
             Throwable throwable

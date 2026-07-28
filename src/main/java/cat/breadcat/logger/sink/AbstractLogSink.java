@@ -9,8 +9,12 @@ import java.util.Objects;
 
 public abstract class AbstractLogSink implements LogSink
 {
+    // IN - EXTERNAL
+    // OUT - EXTERNAL
+
     // CONSTRUCTOR
     private final LogFormatter formatter;
+
 
     public AbstractLogSink(
             LogFormatter formatter
@@ -27,7 +31,11 @@ public abstract class AbstractLogSink implements LogSink
             LogEvent event
     )
     {
-        return formatter.format(event);
+        return formatter.format(
+                Objects.requireNonNull(
+                        event, "event"
+                )
+        );
     }
     // ~~PROTECTED~~
 }

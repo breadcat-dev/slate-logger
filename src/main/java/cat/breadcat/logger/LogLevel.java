@@ -41,8 +41,6 @@ public enum LogLevel
             LogLevel level
     )
     {
-        Objects.requireNonNull(level, "level");
-
         return this.priority >= level.priority;
     }
     // ~~PUBLIC~~

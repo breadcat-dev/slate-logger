@@ -10,28 +10,37 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 
 public final class FileSink extends AbstractLogSink
 {
+    // IN - EXTERNAL
+    // OUT - EXTERNAL (CAPTURED BY PARENT)
+
     // CONSTRUCTOR
     private final PrintStream out;
 
+
     public FileSink(
-            LogFormatter formatter, Path file
+            LogFormatter formatter, Path filePath
     )
     {
         super(formatter);
 
+        Objects.requireNonNull(
+                filePath, "filePath"
+        );
+
         try
         {
-            Path parent = file.getParent();
+            Path parent = filePath.getParent();
             if(parent != null)
                 Files.createDirectories(parent);
 
             this.out = new PrintStream(
                     new FileOutputStream(
-                            file.toFile(), true
+                            filePath.toFile(), true
                     ),
                     true,
                     StandardCharsets.UTF_8
@@ -40,7 +49,7 @@ public final class FileSink extends AbstractLogSink
         catch(IOException e)
         {
             throw new RuntimeException(
-                    "Failed to initialize FileSink for path: " + file, e
+                    "Failed to initialize FileSink for path: " + filePath, e
             );
         }
     }

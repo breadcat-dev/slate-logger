@@ -8,14 +8,18 @@ import java.util.Objects;
 
 public final class LogContext
 {
+    // IN - INTERNAL
+    // OUT - INTERNAL
+
     // CONSTRUCTOR
     private final Map<String, Object> context;
+
 
     private LogContext(
             Map<String, Object> context
     )
     {
-        this.context = Map.copyOf(context);
+        this.context = context;
     }
     // ~~CONSTRUCTOR~~
 

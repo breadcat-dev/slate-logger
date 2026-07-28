@@ -5,13 +5,15 @@ import cat.breadcat.logger.event.LogEvent;
 import cat.breadcat.logger.formatter.LogFormatter;
 
 
-public final class ConsoleSink extends AbstractLogSink
+public final class DiscardSink extends AbstractLogSink
 {
     // IN - EXTERNAL (CAPTURED BY PARENT)
-    // OUT - EXTERNAL (CAPTURED BY PARENT)
+    // OUT - REDUNDANT
 
     // CONSTRUCTOR
-    public ConsoleSink(
+    private static volatile String BLACK_HOLE;
+
+    public DiscardSink(
             LogFormatter formatter
     )
     {
@@ -25,9 +27,7 @@ public final class ConsoleSink extends AbstractLogSink
             LogEvent event
     )
     {
-        System.out.println(
-                format(event)
-        );
+        BLACK_HOLE = format(event);
     }
     // ~~PUBLIC~~
 }

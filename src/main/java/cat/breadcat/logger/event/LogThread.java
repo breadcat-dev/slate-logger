@@ -1,21 +1,20 @@
 package cat.breadcat.logger.event;
 
 
-import java.util.Objects;
-
-
 public final class LogThread
 {
+    // IN - INTERNAL
+    // OUT - EXTERNAL
+
     // CONSTRUCTOR
     private final Thread thread;
+
 
     private LogThread(
             Thread thread
     )
     {
-        this.thread = Objects.requireNonNull(
-                thread, "thread"
-        );
+        this.thread = thread;
     }
     // ~~CONSTRUCTOR~~
 

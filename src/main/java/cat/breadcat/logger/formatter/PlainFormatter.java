@@ -4,10 +4,17 @@ package cat.breadcat.logger.formatter;
 import cat.breadcat.logger.LogLevel;
 import cat.breadcat.logger.event.*;
 
+import java.util.Objects;
+
+
 public final class PlainFormatter implements LogFormatter
 {
+    // IN - INTERNAL
+    // OUT - EXTERNAL
+
     // CONSTRUCTOR
     private static final PlainFormatter INSTANCE = new PlainFormatter();
+
 
     private PlainFormatter() {}
     // ~~CONSTRUCTOR~~
@@ -23,7 +30,9 @@ public final class PlainFormatter implements LogFormatter
     @Override
     public String format(LogEvent event)
     {
-        LogContext context = event.context();
+        LogContext context = Objects.requireNonNull(
+                event.context(), "context"
+        );
         LogThread thread = event.thread();
         LogException exception = event.exception();
 
@@ -31,10 +40,19 @@ public final class PlainFormatter implements LogFormatter
                 LogContextKeys.CATEGORY
         );
 
-        LogTimestamp timestamp = event.timestamp();
-        String className = event.className();
-        LogLevel level = event.level();
-        String message = event.message();
+        LogTimestamp timestamp = Objects.requireNonNull(
+                event.timestamp(), "timestamp"
+        );
+        String className = Objects.requireNonNull(
+                event.className(), "className"
+        );
+        LogLevel level = Objects.requireNonNull(
+                event.level(), "level"
+        );
+        String message = Objects.requireNonNull(
+                event.message(), "message"
+        );
+
 
 
         String formattedThread = "";

@@ -61,12 +61,12 @@ Once installed, add the dependency:
 
 ### Groovy
 ```gradle
-implementation "cat.breadcat:slate-logger:<version>"
+implementation "cat.breadcat.slate:logger:<version>"
 ```
 
 ### Kotlin
 ```gradle
-implementation("cat.breadcat:slate-logger:<version>")
+implementation("cat.breadcat.slate:logger:<version>")
 ```
 
 ---

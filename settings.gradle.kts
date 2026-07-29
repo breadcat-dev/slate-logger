@@ -1,1 +1,1 @@
-rootProject.name = "slate-logger"
+rootProject.name = "logger"

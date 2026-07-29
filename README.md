@@ -251,7 +251,6 @@ final Logger LOGGER = Logger.builder()
 
 - optimize
 - log rotation
-- final API cleanup
 
 
 ## Dependencies

@@ -3,8 +3,8 @@ plugins {
     id("maven-publish")
 }
 
-group = "cat.breadcat"
-version = "0.3.1-beta"
+group = "cat.breadcat.slate"
+version = "0.3.2-beta"
 
 repositories {
     mavenCentral()

@@ -1,9 +1,6 @@
 package cat.breadcat.logger.ansi;
 
 
-import java.util.Objects;
-
-
 public enum AnsiColor
 {
     // DECLARATION

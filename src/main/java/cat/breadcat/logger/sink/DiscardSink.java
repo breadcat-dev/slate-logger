@@ -7,27 +7,22 @@ import cat.breadcat.logger.formatter.LogFormatter;
 
 public final class DiscardSink extends AbstractLogSink
 {
-    // IN - EXTERNAL (CAPTURED BY PARENT)
-    // OUT - REDUNDANT
+    // ===== Constants =====
 
-    // CONSTRUCTOR
     private static volatile String BLACK_HOLE;
 
-    public DiscardSink(
-            LogFormatter formatter
-    )
+    // ===== Constructors =====
+
+    public DiscardSink(LogFormatter formatter)
     {
         super(formatter);
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC
+    // ===== Logging =====
+
     @Override
-    public void log(
-            LogEvent event
-    )
+    public void log(LogEvent event)
     {
         BLACK_HOLE = format(event);
     }
-    // ~~PUBLIC~~
 }

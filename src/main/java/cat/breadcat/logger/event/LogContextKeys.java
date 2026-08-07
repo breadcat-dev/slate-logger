@@ -3,11 +3,13 @@ package cat.breadcat.logger.event;
 
 public final class LogContextKeys
 {
-    // CONSTRUCTOR
-    private LogContextKeys() {}
-    // ~~CONSTRUCTOR~~
+    // ===== Constants =====
 
-    // PUBLIC STATIC
     public static final String CATEGORY = "category";
-    // ~~PUBLIC STATIC~~
+
+    // ===== Constructors =====
+
+    private LogContextKeys()
+    {
+    }
 }

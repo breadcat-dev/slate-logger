@@ -7,27 +7,18 @@ import cat.breadcat.logger.formatter.LogFormatter;
 
 public final class ConsoleSink extends AbstractLogSink
 {
-    // IN - EXTERNAL (CAPTURED BY PARENT)
-    // OUT - EXTERNAL (CAPTURED BY PARENT)
+    // ===== Constructors =====
 
-    // CONSTRUCTOR
-    public ConsoleSink(
-            LogFormatter formatter
-    )
+    public ConsoleSink(LogFormatter formatter)
     {
         super(formatter);
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC
+    // ===== Logging =====
+
     @Override
-    public void log(
-            LogEvent event
-    )
+    public void log(LogEvent event)
     {
-        System.out.println(
-                format(event)
-        );
+        System.out.println(format(event));
     }
-    // ~~PUBLIC~~
 }

@@ -6,11 +6,10 @@ import cat.breadcat.logger.event.LogEvent;
 
 public final class NullSink implements LogSink
 {
-    // IN - REDUNDANT
-    // OUT - REDUNDANT
+    // ===== Logging =====
 
-    // PUBLIC
     @Override
-    public void log(LogEvent event) {}
-    // ~~PUBLIC~~
+    public void log(LogEvent event)
+    {
+    }
 }

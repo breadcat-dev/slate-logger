@@ -9,4 +9,5 @@ record LogTask(
         LogEvent event,
         LogSink[] sinks
 )
-{}
+{
+}

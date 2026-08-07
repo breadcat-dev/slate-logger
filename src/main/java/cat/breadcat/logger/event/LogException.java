@@ -8,35 +8,28 @@ import java.util.Objects;
 
 public final class LogException
 {
-    // IN - EXTERNAL
-    // OUT - INTERNAL
+    // ===== Fields =====
 
-    // CONSTRUCTOR
     private final Throwable throwable;
 
+    // ===== Constructors =====
 
-    private LogException(
-            Throwable throwable
-    )
+    private LogException(Throwable throwable)
     {
-        this.throwable = Objects.requireNonNull(
-                throwable, "throwable"
-        );
-    }
-    // ~~CONSTRUCTOR~~
+        Objects.requireNonNull(throwable, "throwable");
 
-    // PUBLIC STATIC
-    public static LogException of(
-            Throwable throwable
-    )
+        this.throwable = throwable;
+    }
+
+    // ===== Factories =====
+
+    public static LogException of(Throwable throwable)
     {
-        return new LogException(
-                throwable
-        );
+        return new LogException(throwable);
     }
-    // ~~PUBLIC STATIC~~
 
-    // PUBLIC
+    // ===== Getters =====
+
     public String message()
     {
         return throwable.getMessage();
@@ -51,5 +44,4 @@ public final class LogException
 
         return writer.toString();
     }
-    // ~~PUBLIC~~
 }

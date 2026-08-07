@@ -12,58 +12,48 @@ import java.nio.file.Path;
 
 public final class LoggerFactory
 {
-    // CONSTRUCTOR
-    private LoggerFactory() {}
-    // ~~CONSTRUCTOR~~
+    // ===== Constructor =====
 
-    // PUBLIC STATIC
-    public static Logger console(
-            Class<?> clazz
-    )
+    private LoggerFactory()
+    {
+    }
+
+    // ===== Factories =====
+
+    public static Logger console(Class<?> clazz )
     {
         return new Logger(
                 new LogSink[]{
                         new ConsoleSink(ColorFormatter.instance())
                 },
                 LogLevel.DEBUG,
-                clazz.getSimpleName(),
+                clazz,
                 false
         );
     }
 
-    public static Logger file(
-            Class<?> clazz, Path file
-    )
+    public static Logger file(Class<?> clazz, Path file)
     {
         return new Logger(
                 new LogSink[]{
-                        new FileSink(
-                                PlainFormatter.instance(), file
-                        )
+                        new FileSink(PlainFormatter.instance(), file)
                 },
                 LogLevel.DEBUG,
-                clazz.getSimpleName(),
+                clazz,
                 false
         );
     }
 
-    public static Logger consoleAndFile(
-            Class<?> clazz, Path file
-    )
+    public static Logger combined(Class<?> clazz, Path file)
     {
         return new Logger(
                 new LogSink[]{
-                        new ConsoleSink(
-                                ColorFormatter.instance()
-                        ),
-                        new FileSink(
-                                PlainFormatter.instance(), file
-                        )
+                        new ConsoleSink(ColorFormatter.instance()),
+                        new FileSink(PlainFormatter.instance(), file)
                 },
                 LogLevel.DEBUG,
-                clazz.getSimpleName(),
-                false
+                clazz,
+                true
         );
     }
-    // ~~PUBLIC STATIC~~
 }

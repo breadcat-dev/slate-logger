@@ -11,92 +11,64 @@ import java.util.Objects;
 
 public final class ColorFormatter implements LogFormatter
 {
-    // IN - INTERNAL
-    // OUT - EXTERNAL
+    // ===== Constants =====
 
-    // CONSTRUCTOR
     private static final ColorFormatter INSTANCE = new ColorFormatter();
 
+    // ===== Constructors =====
 
-    private ColorFormatter() {}
-    // ~~CONSTRUCTOR~~
+    private ColorFormatter()
+    {
+    }
 
-    // PUBLIC STATIC
+    // ===== Factories =====
+
     public static ColorFormatter instance()
     {
         return INSTANCE;
     }
-    // ~~PUBLIC STATIC~~
 
-    // PUBLIC
+    // ===== Formatting =====
+
     @Override
     public String format(LogEvent event)
     {
-        LogContext context = Objects.requireNonNull(
-                event.context(), "context"
-        );
+        Objects.requireNonNull(event.context(), "context");
+        Objects.requireNonNull(event.timestamp(), "timestamp");
+        Objects.requireNonNull(event.clazz(), "clazz");
+        Objects.requireNonNull(event.level(), "level");
+        Objects.requireNonNull(event.message(), "message");
+
+        LogContext context = event.context();
         LogThread thread = event.thread();
         LogException exception = event.exception();
+        Object category = context.get(LogContextKeys.CATEGORY);
+        LogTimestamp timestamp = event.timestamp();
+        String className = event.clazz().getSimpleName();
+        LogLevel level = event.level();
+        String message = event.message();
 
-        Object category = context.get(
-                LogContextKeys.CATEGORY
-        );
-
-        LogTimestamp timestamp = Objects.requireNonNull(
-                event.timestamp(), "timestamp"
-        );
-        String className = Objects.requireNonNull(
-                event.className(), "className"
-        );
-        LogLevel level = Objects.requireNonNull(
-                event.level(), "level"
-        );
-        String message = Objects.requireNonNull(
-                event.message(), "message"
-        );
-
-
-        String formattedThread = "";
-        if(thread != null)
-        {
-            String threadName = thread.name();
-
-            formattedThread =
-                    "-" +
-                    ((threadName.isBlank()) ?
-                    "thread" + thread.id() :
-                    threadName);
-        }
-
-        String formattedException = "";
-        if(exception != null)
-        {
-            formattedException =
-                    "\n" +
-                    exception.stackTrace();
-        }
-
-        String formattedCategory = "";
-        if(category != null)
-        {
-            formattedCategory =
-                    "-" +
-                    category;
-        }
-
+        String formattedThread =
+                (thread != null) ?
+                "-" + (thread.name().isBlank() ? "thread" + thread.id() : thread.name()) :
+                "";
+        String formattedException =
+                (exception != null) ?
+                "\n" + exception.stackTrace() :
+                "";
+        String formattedCategory =
+                (category != null) ?
+                "-" + category :
+                "";
         String formattedTimestamp = timestamp.format();
         String formattedClassName = className + formattedThread;
-        String formattedLevel = level.toString() + formattedCategory;
-
+        String formattedLevel = level + formattedCategory;
 
         String coloredException = Ansi.color(formattedException, level.color());
-
         String coloredTimestamp = Ansi.color(formattedTimestamp, AnsiColor.CYAN);
         String coloredClassName = Ansi.color(formattedClassName, AnsiColor.MAGENTA);
         String coloredLevel = Ansi.color(formattedLevel, level.color());
 
-
         return "(" + coloredTimestamp + ") [" + coloredClassName + "] <" + coloredLevel + "> " + message + coloredException;
     }
-    // ~~PUBLIC~~
 }

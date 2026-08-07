@@ -14,24 +14,22 @@ import java.util.concurrent.TimeUnit;
 
 final class LoggingSystem implements AutoCloseable
 {
-    // IN - INTERNAL
-    // OUT - EXTERNAL
+    // ===== Constants =====
 
-    // CONSTRUCTOR
     private static final LoggingSystem INSTANCE = new LoggingSystem();
 
-    private final ExecutorService worker;
-    private final Set<LogSink> sinks = Collections.newSetFromMap(
-            new IdentityHashMap<>()
-    );
+    // ===== Fields =====
 
+    private final ExecutorService worker;
+    private final Set<LogSink> sinks;
+
+    // ===== Constructors =====
 
     private LoggingSystem()
     {
-        Runtime.getRuntime().addShutdownHook(
-                new Thread(() -> LoggingSystem.instance().close())
-        );
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close, "logger-shutdown"));
 
+        this.sinks = Collections.newSetFromMap(new IdentityHashMap<>());
         this.worker = Executors.newSingleThreadExecutor(runnable ->
         {
             Thread thread = new Thread(runnable, "logger");
@@ -40,16 +38,16 @@ final class LoggingSystem implements AutoCloseable
             return thread;
         });
     }
-    // ~~CONSTRUCTOR~~
 
-    // STATIC
+    // ===== Factories =====
+
     static LoggingSystem instance()
     {
         return INSTANCE;
     }
-    // ~~STATIC~~
 
-    // PACKAGE-PRIVATE
+    // ===== Logging =====
+
     void submit(LogTask task)
     {
         try
@@ -82,14 +80,13 @@ final class LoggingSystem implements AutoCloseable
             Collections.addAll(this.sinks, sinks);
         }
     }
-    // ~~PACKAGE PRIVATE~~
 
-    // PUBLIC
+    // ===== Overrides =====
+
     @Override
     public void close()
     {
         worker.shutdown();
-
         try
         {
             if(!worker.awaitTermination(5, TimeUnit.SECONDS))
@@ -116,5 +113,4 @@ final class LoggingSystem implements AutoCloseable
             }
         }
     }
-    // ~~PUBLIC~~
 }

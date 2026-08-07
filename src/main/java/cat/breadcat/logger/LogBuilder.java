@@ -8,52 +8,38 @@ import cat.breadcat.logger.event.LogException;
 
 public final class LogBuilder
 {
-    // CONSTRUCTOR
+    // ===== Fields =====
+
     private final Logger logger;
     private final LogLevel level;
-
     private LogContext context;
     private LogException exception;
 
-    LogBuilder(
-            Logger logger,
-            LogLevel level
-    )
+    // ===== Constructors =====
+
+    LogBuilder(Logger logger, LogLevel level)
     {
         this.logger = logger;
         this.level = level;
-
         this.context = LogContext.empty();
         this.exception = null;
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC
-    public LogBuilder with(
-            String key,
-            Object value
-    )
+    // ===== Configuration =====
+
+    public LogBuilder with(String key, Object value)
     {
-        this.context = this.context.with(
-                key,
-                value
-        );
+        this.context = this.context.with(key, value);
 
         return this;
     }
 
-    public LogBuilder category(
-            String value
-    )
+    public LogBuilder category(String value)
     {
-        this.context = this.context.with(
-                LogContextKeys.CATEGORY,
-                value
-        );
+        this.context = this.context.with(LogContextKeys.CATEGORY, value);
 
         return this;
     }
-
 
     public LogBuilder exception(Throwable throwable)
     {
@@ -62,19 +48,10 @@ public final class LogBuilder
         return this;
     }
 
+    // ===== Logging =====
 
-
-    public void log(
-            String message,
-            Object... args
-    )
+    public void log(String message, Object... args)
     {
-        logger.log(
-                context,
-                exception,
-                level,
-                message,
-                args
-        );
+        logger.log(context, exception, level, message, args);
     }
 }

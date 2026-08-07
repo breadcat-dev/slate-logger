@@ -37,9 +37,8 @@
 - Gradle 9.3.0+ (included)
 - Git
 
-
 Currently, Slate Logger is not on Maven Central.
-To use it, clone the repository and publish it to your local Maven Repository.
+To use it, clone the repository and publish it to your local Maven repository.
 
 ### Linux / MacOS
 
@@ -74,64 +73,71 @@ implementation("cat.breadcat.slate:logger:<version>")
 ## Usage
 
 ```java
-package test.readme;
-
-
 import cat.breadcat.logger.LogLevel;
 import cat.breadcat.logger.Logger;
-import cat.breadcat.logger.event.Log;
 import cat.breadcat.logger.formatter.ColorFormatter;
 import cat.breadcat.logger.formatter.PlainFormatter;
 import cat.breadcat.logger.sink.ConsoleSink;
 import cat.breadcat.logger.sink.FileSink;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 
 public class Main
 {
-    public static void main(String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
         // final Logger LOGGER = LoggerFactory.console(Main.class);
+
         final Logger LOGGER = Logger.builder()
-                .setClassName(Main.class)
+                .source(Main.class)
                 .addSink(new ConsoleSink(ColorFormatter.instance()))
                 .addSink(new FileSink(PlainFormatter.instance(), Path.of("./debug.log")))
                 .setMinimum(LogLevel.INFO)
                 .captureThread()
                 .build();
 
-        LOGGER.debug("debug");
-        LOGGER.info("info");
-        LOGGER.warn("warn");
+        // Simple logging
+        LOGGER.debug("hello");
+        LOGGER.info("hello");
+        LOGGER.warn("hello");
+        LOGGER.error("hello");
+        LOGGER.critical("hello");
+
+        // Exception logging + message formatting
+        final IOException exception = new IOException("test exception");
+
+        LOGGER.atDebug()
+                .category("category")
+                .exception(exception)
+                .log("{} was here {} ago", "BreadCat", null);
+        LOGGER.atInfo()
+                .category("category")
+                .exception(exception)
+                .log("{} was here {} ago", "BreadCat", null);
+        LOGGER.atWarn()
+                .category("category")
+                .exception(exception)
+                .log("{} was here {} ago", "BreadCat", null);
         LOGGER.atError()
-                .with("custom-context", 1337)
-                .log("error");
-        LOGGER.atCritical()
-                .category("boom")
-                .log("critical");
-        
+                .category("category")
+                .exception(exception)
+                .log("{} was here {} ago", "BreadCat", null);
 
-        for(int i = 0; i < 100; i++)
+        // Different thread
+        Thread.startVirtualThread(() ->
         {
-            Thread.ofVirtual()
-                    .name("test" + i)
-                    .start(() ->
-                    {
-                        Logger logger = Logger.builder()
-                                .setClassName(Main.class)
-                                .addSink(new ConsoleSink(ColorFormatter.instance()))
-                                .captureThread()
-                                .build();
+            LOGGER.atCritical()
+                    .category("crash")
+                    .exception(exception)
+                    .log("something crash related idk");
+        });
 
-                        for(int j = 0; j < 100; j++)
-                            logger.info("{}", j);
-                    });
-        }
+        Thread.sleep(250);
     }
 }
 ```
-
 
 ## Examples
 
@@ -140,81 +146,67 @@ public class Main
 ```java
 public final class NetworkFormatter implements LogFormatter
 {
+    // ===== Constants =====
+
     private static final NetworkFormatter INSTANCE = new NetworkFormatter();
 
-    private NetworkFormatter() {}
+    // ===== Constructors =====
 
+    private NetworkFormatter()
+    {
+    }
 
+    // ===== Factories =====
 
     public static NetworkFormatter instance()
     {
         return INSTANCE;
     }
 
-
+    // ===== Formatting =====
 
     @Override
     public String format(LogEvent event)
     {
+        Objects.requireNonNull(event.context(), "context");
+        Objects.requireNonNull(event.timestamp(), "timestamp");
+        Objects.requireNonNull(event.clazz(), "clazz");
+        Objects.requireNonNull(event.level(), "level");
+        Objects.requireNonNull(event.message(), "message");
+
         LogContext context = event.context();
         LogThread thread = event.thread();
         LogException exception = event.exception();
-
-        Object category = context.get(
-                LogContextKeys.CATEGORY
-        );
-
+        Object category = context.get(LogContextKeys.CATEGORY);
         Object user = context.get("user");
         Object address = context.get("address");
-
         LogTimestamp timestamp = event.timestamp();
-        String className = event.className();
+        String className = event.clazz().getSimpleName();
         LogLevel level = event.level();
         String message = event.message();
 
-
-        String formattedThread = "";
-        if(thread != null)
-        {
-            String threadName = thread.name();
-
-            formattedThread =
-                    "-" +
-                            ((threadName.isBlank()) ?
-                                    "thread" + thread.id() :
-                                    threadName);
-        }
-
-        String formattedException = "";
-        if(exception != null)
-        {
-            formattedException =
-                    "\n" +
-                            exception.stackTrace();
-        }
-
-        String formattedCategory = "";
-        if(category != null)
-        {
-            formattedCategory =
-                    "-" +
-                            category;
-        }
-
+        String formattedThread =
+                (thread != null) ?
+                        "-" + (thread.name().isBlank() ? "thread" + thread.id() : thread.name()) :
+                        "";
+        String formattedException =
+                (exception != null) ?
+                        "\n" + exception.stackTrace() :
+                        "";
+        String formattedCategory =
+                (category != null) ?
+                        "-" + category :
+                        "";
         String formattedUser = user + "-" + address;
-
         String formattedTimestamp = timestamp.format();
         String formattedClassName = className + formattedThread;
-        String formattedLevel = level.toString() + formattedCategory;
-
+        String formattedLevel = level + formattedCategory;
 
         String coloredException = Ansi.color(formattedException, level.color());
         String coloredUser = Ansi.color(formattedUser, AnsiColor.YELLOW);
-
         String coloredTimestamp = Ansi.color(formattedTimestamp, AnsiColor.CYAN);
         String coloredClassName = Ansi.color(formattedClassName, AnsiColor.MAGENTA);
         String coloredLevel = Ansi.color(formattedLevel, level.color());
-
 
         return "(" + coloredTimestamp + ") [" + coloredClassName + "] {" + coloredUser + "} <" + coloredLevel + "> " + message + coloredException;
     }
@@ -225,38 +217,32 @@ public final class NetworkFormatter implements LogFormatter
 
 ```java
 final Logger LOGGER = Logger.builder()
-        .setClassName(Main.class)
-        .addSink(
-                new ConsoleSink(
-                        NetworkFormatter.instance()
-                )
-        )
+        .source(Main.class)
+        .addSink(new ConsoleSink(NetworkFormatter.instance()))
+        .captureThread()
         .build();
 
-        LOGGER.atError()
-                .category("crash")
-                .with("user", "BreadCat")
-                .with("address", "127.0.0.1")
-                .log("A user has crashed.");
+LOGGER.atInfo()
+        .with("user", "BreadCat")
+        .with("address", "127.0.0.1")
+        .category("connection")
+        .log("A new user has connected to the server");
 ```
 
-### Console
+**Console:**
 
 ```text
-(2026-07-27 18:46:38.765) [Main] {BreadCat-127.0.0.1} <ERROR-crash> A user has crashed.
+(2026-08-07 14:13:41.706) [Main-main] {BreadCat-127.0.0.1} <INFO-connection> A new user has connected to the server
 ```
-
 
 ## Roadmap
 
-- optimize
-- log rotation
-
+- Performance optimization
+- Log rotation
 
 ## Dependencies
 
 *none*
-
 
 ## License
 

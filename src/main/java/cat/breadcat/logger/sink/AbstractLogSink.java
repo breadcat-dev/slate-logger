@@ -9,33 +9,25 @@ import java.util.Objects;
 
 public abstract class AbstractLogSink implements LogSink
 {
-    // IN - EXTERNAL
-    // OUT - EXTERNAL
+    // ===== Fields =====
 
-    // CONSTRUCTOR
     private final LogFormatter formatter;
 
+    // ===== Constructors =====
 
-    public AbstractLogSink(
-            LogFormatter formatter
-    )
+    public AbstractLogSink(LogFormatter formatter)
     {
-        this.formatter = Objects.requireNonNull(
-                formatter, "formatter"
-        );
-    }
-    // ~~CONSTRUCTOR~~
+        Objects.requireNonNull(formatter, "formatter");
 
-    // PROTECTED
-    protected String format(
-            LogEvent event
-    )
-    {
-        return formatter.format(
-                Objects.requireNonNull(
-                        event, "event"
-                )
-        );
+        this.formatter = formatter;
     }
-    // ~~PROTECTED~~
+
+    // ===== Formatting =====
+
+    protected String format(LogEvent event)
+    {
+        Objects.requireNonNull(event, "event");
+
+        return formatter.format(event);
+    }
 }

@@ -9,51 +9,41 @@ import java.util.Objects;
 
 public final class LogTimestamp
 {
-    // IN - INTERNAL
-    // OUT - INTERNAL & EXTERNAL
+    // ===== Constants =====
 
-    // CONSTRUCTOR
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter
-            .ofPattern(
-                    "yyyy-MM-dd HH:mm:ss.SSS"
-            )
-            .withZone(
-                    ZoneId.systemDefault()
-            );
+            .ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+            .withZone(ZoneId.systemDefault());
+
+    // ===== Fields =====
 
     private final Instant instant;
 
+    // ===== Constructors =====
 
-    private LogTimestamp(
-            Instant instant
-    )
+    private LogTimestamp(Instant instant)
     {
         this.instant = instant;
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC STATIC
+    // ===== Factories =====
+
     public static LogTimestamp capture()
     {
-        return new LogTimestamp(
-                Instant.now()
-        );
+        return new LogTimestamp(Instant.now());
     }
-    // ~~PUBLIC STATIC~~
 
-    // PUBLIC
+    // ===== Formatting =====
+
     public String format()
     {
         return DEFAULT_FORMATTER.format(instant);
     }
 
-    public String format(
-            DateTimeFormatter formatter
-    )
+    public String format(DateTimeFormatter formatter)
     {
-        return Objects.requireNonNull(
-                formatter, "formatter"
-        ).format(instant);
+        Objects.requireNonNull(formatter, "formatter");
+
+        return formatter.format(instant);
     }
-    // ~~PUBLIC~~
 }

@@ -15,22 +15,17 @@ import java.util.Objects;
 
 public final class FileSink extends AbstractLogSink
 {
-    // IN - EXTERNAL
-    // OUT - EXTERNAL (CAPTURED BY PARENT)
+    // ===== Fields =====
 
-    // CONSTRUCTOR
     private final PrintStream out;
 
+    // ===== Constructors =====
 
-    public FileSink(
-            LogFormatter formatter, Path filePath
-    )
+    public FileSink(LogFormatter formatter, Path filePath)
     {
         super(formatter);
 
-        Objects.requireNonNull(
-                filePath, "filePath"
-        );
+        Objects.requireNonNull(filePath, "filePath");
 
         try
         {
@@ -39,31 +34,22 @@ public final class FileSink extends AbstractLogSink
                 Files.createDirectories(parent);
 
             this.out = new PrintStream(
-                    new FileOutputStream(
-                            filePath.toFile(), true
-                    ),
+                    new FileOutputStream(filePath.toFile(), true),
                     true,
                     StandardCharsets.UTF_8
             );
         }
         catch(IOException e)
         {
-            throw new RuntimeException(
-                    "Failed to initialize FileSink for path: " + filePath, e
-            );
+            throw new RuntimeException("Failed to initialize FileSink for path: " + filePath, e);
         }
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC
+    // ===== Logging =====
+
     @Override
-    public void log(
-            LogEvent event
-    )
+    public void log(LogEvent event)
     {
-        out.println(
-                format(event)
-        );
+        out.println(format(event));
     }
-    // ~~PUBLIC~~
 }

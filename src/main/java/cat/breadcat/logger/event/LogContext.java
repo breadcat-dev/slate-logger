@@ -8,70 +8,48 @@ import java.util.Objects;
 
 public final class LogContext
 {
-    // IN - INTERNAL
-    // OUT - INTERNAL
+    // ===== Fields =====
 
-    // CONSTRUCTOR
     private final Map<String, Object> context;
 
+    // ===== Constructors =====
 
-    private LogContext(
-            Map<String, Object> context
-    )
+    private LogContext(Map<String, Object> context)
     {
         this.context = context;
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC STATIC
+    // ===== Factories =====
+
     public static LogContext empty()
     {
-        return new LogContext(
-                Map.of()
-        );
+        return new LogContext(Map.of());
     }
-    // ~~PUBLIC STATIC~~
 
-    // PUBLIC
-    public LogContext with(
-            String key, Object value
-    )
+    // ===== Setters =====
+
+    public LogContext with(String key, Object value)
     {
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(value, "value");
+
         Map<String, Object> context = new HashMap<>(this.context);
-        context.put(
-                Objects.requireNonNull(
-                        key, "key"
-                ),
-                Objects.requireNonNull(
-                        value, "value"
-                )
-        );
+        context.put(key, value);
 
         return new LogContext(context);
     }
 
+    // ===== Queries =====
 
-    public Object get(
-            String key
-    )
+    public boolean has(String key)
     {
-        return context.get(
-                Objects.requireNonNull(
-                        key, "key"
-                )
-        );
+        return context.containsKey(Objects.requireNonNull(key, "key"));
     }
 
+    // ===== Getters =====
 
-    public boolean has(
-            String key
-    )
+    public Object get(String key)
     {
-        return context.containsKey(
-                Objects.requireNonNull(
-                        key, "key"
-                )
-        );
+        return context.get(Objects.requireNonNull(key, "key"));
     }
-    // ~~PUBLIC~~
 }

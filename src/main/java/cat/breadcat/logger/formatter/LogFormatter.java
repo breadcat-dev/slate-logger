@@ -6,7 +6,7 @@ import cat.breadcat.logger.event.LogEvent;
 
 public interface LogFormatter
 {
-    // PUBLIC
+    // ===== Formatting =====
+
     String format(LogEvent event);
-    // ~~PUBLIC~~
 }

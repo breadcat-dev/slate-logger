@@ -3,31 +3,26 @@ package cat.breadcat.logger.event;
 
 public final class LogThread
 {
-    // IN - INTERNAL
-    // OUT - EXTERNAL
+    // ===== Fields =====
 
-    // CONSTRUCTOR
     private final Thread thread;
 
+    // ===== Constructors =====
 
-    private LogThread(
-            Thread thread
-    )
+    private LogThread(Thread thread)
     {
         this.thread = thread;
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC STATIC
+    // ===== Factories =====
+
     public static LogThread capture()
     {
-        return new LogThread(
-                Thread.currentThread()
-        );
+        return new LogThread(Thread.currentThread());
     }
-    // ~~PUBLIC STATIC~~
 
-    // PUBLIC
+    // ===== Getters =====
+
     public String name()
     {
         return thread.getName();
@@ -37,5 +32,4 @@ public final class LogThread
     {
         return thread.threadId();
     }
-    // ~~PUBLIC~~
 }

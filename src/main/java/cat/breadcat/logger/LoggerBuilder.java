@@ -9,73 +9,56 @@ import java.util.List;
 
 public final class LoggerBuilder
 {
-    // CONSTRUCTOR
+    // ===== Fields =====
     private final List<LogSink> sinks;
     private LogLevel minimum;
-    private String className;
+    private Class<?> clazz;
     private boolean captureThread;
 
+    // ===== Constructors =====
 
     LoggerBuilder()
     {
         this.sinks = new ArrayList<>();
         this.minimum = LogLevel.DEBUG;
-        this.className = "Unknown";
+        this.clazz = null;
         this.captureThread = false;
     }
-    // ~~CONSTRUCTOR~~
 
-    // PUBLIC
-    public LoggerBuilder setClassName(
-            String className
-    )
+    // ===== Configuration =====
+
+    public LoggerBuilder source(Class<?> clazz)
     {
-        this.className = className;
+        this.clazz = clazz;
+
         return this;
     }
 
-    public LoggerBuilder setClassName(
-            Class<?> clazz
-    )
-    {
-        this.className = clazz.getSimpleName();
-        return this;
-    }
-
-
-    public LoggerBuilder addSink(
-            LogSink sink
-    )
+    public LoggerBuilder addSink(LogSink sink)
     {
         this.sinks.add(sink);
+
         return this;
     }
 
-
-    public LoggerBuilder setMinimum(
-            LogLevel level
-    )
+    public LoggerBuilder setMinimum(LogLevel level)
     {
         this.minimum = level;
+
         return this;
     }
-
 
     public LoggerBuilder captureThread()
     {
         this.captureThread = true;
+
         return this;
     }
 
+    // ===== Building =====
 
     public Logger build()
     {
-        return new Logger(
-                sinks.toArray(LogSink[]::new),
-                minimum,
-                className,
-                captureThread
-        );
+        return new Logger(sinks.toArray(LogSink[]::new), minimum, clazz, captureThread);
     }
-    // ~~PUBLIC~~
 }
